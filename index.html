@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Sequence Question Generator</title>
+    <title>Math Sequence Question Explorer</title>
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,16 +23,30 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        /* Custom styles for smooth transitions */
+        /* Container transition for the whole solution block */
         .solution-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
             opacity: 0;
         }
         .solution-content.show {
-            max-height: 1500px;
+            max-height: 3000px; /* Large enough to hold all steps */
             opacity: 1;
+        }
+
+        /* Transitions for individual steps */
+        .step {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, margin 0.5s ease-in-out;
+            margin-bottom: 0;
+        }
+        .step.visible {
+            opacity: 1;
+            max-height: 800px; /* Large enough for a single step */
+            margin-bottom: 1.25rem;
         }
     </style>
 </head>
@@ -43,7 +57,7 @@
         <!-- Header -->
         <header class="text-center space-y-2">
             <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Sequence Question Explorer</h1>
-            <p class="text-gray-600">Interactive tool for exploring arithmetic sequence word problems.</p>
+            <p class="text-gray-600">Interactive tool for exploring arithmetic sequence word problems step-by-step.</p>
         </header>
 
         <!-- Step 1: Original Question -->
@@ -89,35 +103,71 @@
                 </div>
             </div>
 
-            <button onclick="toggleSolution('original-solution')" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">
+            <button onclick="toggleSolution('original-solution', 'orig-steps')" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">
                 Show / Hide Solution
             </button>
 
-            <div id="original-solution" class="solution-content mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <h3 class="font-bold text-blue-800 mb-2">Solution:</h3>
-                <p class="mb-2">Let \( T(n) \) be the number of dots in the \( n \)-th pattern.</p>
-                <p class="mb-2">The sequence of dots is an arithmetic sequence with the first term \( a = 3 \) and common difference \( d = 2 \).</p>
-                <p class="mb-2">The total number of dots in the first \( m \) patterns is the sum of the first \( m \) terms, \( S(m) \):</p>
-                <div class="overflow-x-auto">
-                    \[ S(m) = \frac{m}{2} [2a + (m-1)d] \]
-                    \[ S(m) = \frac{m}{2} [2(3) + (m-1)2] \]
-                    \[ S(m) = \frac{m}{2} [6 + 2m - 2] = m(m + 2) = m^2 + 2m \]
+            <div id="original-solution" class="solution-content mt-4 bg-blue-50 p-5 rounded-lg border border-blue-100">
+                <h3 class="font-bold text-blue-800 mb-4 text-lg border-b border-blue-200 pb-2">Step-by-Step Solution:</h3>
+                
+                <div id="orig-steps">
+                    <div class="step">
+                        <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 1: Identify the Sequence</span>
+                        <p>Let \( T(n) \) be the number of dots in the \( n \)-th pattern.</p>
+                        <p>The sequence of dots is an arithmetic sequence with the first term \( a = 3 \) and common difference \( d = 2 \).</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 2: Sum Formula</span>
+                        <p>The total number of dots in the first \( m \) patterns is the sum of the first \( m \) terms, \( S(m) \):</p>
+                        <div class="overflow-x-auto my-2">
+                            \[ S(m) = \frac{m}{2} [2a + (m-1)d] \]
+                            \[ S(m) = \frac{m}{2} [2(3) + (m-1)2] \]
+                            \[ S(m) = \frac{m}{2} [6 + 2m - 2] = m(m + 2) = m^2 + 2m \]
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 3: Set up Inequality</span>
+                        <p>We are given that the total dots must exceed 6888, so \( S(m) > 6888 \):</p>
+                        <div class="overflow-x-auto my-2">
+                            \[ m^2 + 2m > 6888 \]
+                            \[ m^2 + 2m - 6888 > 0 \]
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 4: Solve Quadratic Inequality</span>
+                        <p>Factorizing the quadratic equation:</p>
+                        <div class="overflow-x-auto my-2">
+                            \[ (m - 82)(m + 84) > 0 \]
+                        </div>
+                        <p>Since \( m \) represents the number of patterns, it must be a positive integer (\( m > 0 \)). Therefore, we take the positive range: \( m > 82 \).</p>
+                    </div>
+
+                    <div class="step">
+                        <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 5: Final Answer</span>
+                        <p class="font-bold text-gray-900 text-lg mt-2">Therefore, the least value of \( m \) is 83.</p>
+                    </div>
                 </div>
-                <p class="mb-2 mt-2">We are given that \( S(m) > 6888 \):</p>
-                <div class="overflow-x-auto">
-                    \[ m^2 + 2m > 6888 \]
-                    \[ m^2 + 2m - 6888 > 0 \]
-                    \[ (m - 82)(m + 84) > 0 \]
+
+                <!-- Controls for Original Solution -->
+                <div class="mt-4 flex flex-wrap gap-3 border-t border-blue-200 pt-4" id="orig-controls">
+                    <button onclick="showNextStep('orig-steps')" class="next-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition flex items-center">
+                        Show Next Step
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <button onclick="showAllSteps('orig-steps')" class="all-btn bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded transition">
+                        Reveal All Steps
+                    </button>
                 </div>
-                <p class="mb-2 mt-2">Since \( m \) must be a positive integer (\( m > 0 \)), we have \( m > 82 \).</p>
-                <p class="font-bold text-gray-900">Therefore, the least value of \( m \) is 83.</p>
             </div>
         </section>
 
         <!-- Step 2: Dynamic Question Generator -->
         <section class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
             <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Step 2: Generate Similar Questions</h2>
-            <p class="text-gray-600 mb-6">Adjust the parameters below to generate a new variation of the question. The visual dot pattern and the step-by-step solution will be dynamically created.</p>
+            <p class="text-gray-600 mb-6">Adjust the parameters below to generate a new variation of the question. The solution will be generated step-by-step.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
@@ -141,13 +191,27 @@
             <!-- Generated Output Area -->
             <div id="dynamic-output" class="mt-8 hidden">
                 <h3 class="font-bold text-lg text-gray-800 mb-2">Generated Question:</h3>
-                <div id="dynamic-question" class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-lg mb-4">
+                <div id="dynamic-question" class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-lg mb-6 shadow-inner">
                     <!-- Question injected here -->
                 </div>
 
-                <h3 class="font-bold text-lg text-gray-800 mb-2">Generated Solution:</h3>
-                <div id="dynamic-solution" class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <!-- Solution injected here -->
+                <div class="bg-green-50 p-5 rounded-lg border border-green-200">
+                    <h3 class="font-bold text-green-800 mb-4 text-lg border-b border-green-200 pb-2">Step-by-Step Solution:</h3>
+                    
+                    <div id="dynamic-solution">
+                        <!-- Solution injected here -->
+                    </div>
+
+                    <!-- Controls for Dynamic Solution -->
+                    <div class="mt-4 flex flex-wrap gap-3 border-t border-green-200 pt-4" id="dynamic-controls">
+                        <button onclick="showNextStep('dynamic-solution')" class="next-btn bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded transition flex items-center">
+                            Show Next Step
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <button onclick="showAllSteps('dynamic-solution')" class="all-btn bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded transition">
+                            Reveal All Steps
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -155,29 +219,68 @@
     </div>
 
     <script>
-        // Function to toggle the visibility of the original solution
-        function toggleSolution(id) {
-            const el = document.getElementById(id);
+        // Toggle the visibility of the whole solution container
+        function toggleSolution(containerId, stepsId) {
+            const el = document.getElementById(containerId);
             if (el.classList.contains('show')) {
                 el.classList.remove('show');
             } else {
                 el.classList.add('show');
+                // Auto-show the first step if none are visible yet
+                const stepsContainer = document.getElementById(stepsId);
+                const visibleSteps = stepsContainer.querySelectorAll('.step.visible');
+                if (visibleSteps.length === 0) {
+                    showNextStep(stepsId);
+                }
             }
         }
 
-        // Function to clean up math strings (e.g., turning "+ -5" into "- 5")
+        // Show the next hidden step in a container
+        function showNextStep(containerId) {
+            const container = document.getElementById(containerId);
+            const hiddenSteps = container.querySelectorAll('.step:not(.visible)');
+            
+            if (hiddenSteps.length > 0) {
+                hiddenSteps[0].classList.add('visible');
+            }
+            
+            // If only one was left (which we just showed), hide the "Next" button
+            if (hiddenSteps.length <= 1) {
+                const controls = container.nextElementSibling;
+                if (controls) {
+                    const nextBtn = controls.querySelector('.next-btn');
+                    if (nextBtn) nextBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // Show all steps at once
+        function showAllSteps(containerId) {
+            const container = document.getElementById(containerId);
+            const steps = container.querySelectorAll('.step');
+            
+            steps.forEach(step => step.classList.add('visible'));
+            
+            // Hide the "Next" button
+            const controls = container.nextElementSibling;
+            if (controls) {
+                const nextBtn = controls.querySelector('.next-btn');
+                if (nextBtn) nextBtn.style.display = 'none';
+            }
+        }
+
+        // Clean up math strings (e.g., turning "+ -5" into "- 5")
         function cleanMathString(str) {
             return str.replace(/\+\s*-/g, '- ');
         }
 
         // Function to dynamically generate the SVG for the dots
         function generateSVG(a, d) {
-            // Determine a nice grid width based on the maximum dots in the 3rd pattern
             const maxDots = a + 2 * d;
             const cols = Math.max(3, Math.ceil(Math.sqrt(maxDots)));
             
-            const dx = 18; // Horizontal spacing
-            const dy = 18; // Vertical spacing
+            const dx = 18; 
+            const dy = 18; 
             let offsetX = 10;
             let svgContent = '';
             let maxHeight = 0;
@@ -187,10 +290,8 @@
                 let patternWidth = (Math.min(N, cols) - 1) * dx;
                 let patternHeight = Math.floor((N - 1) / cols) * dy;
                 
-                // Keep track of the tallest pattern to set the SVG viewBox properly
                 maxHeight = Math.max(maxHeight, 20 + patternHeight + 40);
 
-                // Draw the dots for Pattern i
                 for (let j = 0; j < N; j++) {
                     const cx = offsetX + (j % cols) * dx;
                     const cy = 20 + Math.floor(j / cols) * dy;
@@ -202,13 +303,11 @@
                 const arrowY = 20 + patternHeight / 2;
 
                 if (i < 2) {
-                    // Draw arrow to the next pattern
                     svgContent += `<path d="M ${arrowStartX} ${arrowY} L ${arrowEndX} ${arrowY} M ${arrowEndX - 10} ${arrowY - 10} L ${arrowEndX} ${arrowY} L ${arrowEndX - 10} ${arrowY + 10}" stroke="#374151" stroke-width="2" fill="none"/>\n`;
                     offsetX = arrowEndX + 20;
                 } else {
-                    // Draw ellipsis after the 3rd pattern
                     svgContent += `<text x="${arrowStartX}" y="${arrowY + 8}" font-size="24" font-weight="bold" fill="#374151">...</text>\n`;
-                    offsetX = arrowStartX + 50; // Final total width
+                    offsetX = arrowStartX + 50; 
                 }
             }
 
@@ -216,14 +315,13 @@
             return `<svg width="${offsetX}" height="${maxHeight}" viewBox="${viewBox}" class="max-w-full mx-auto">\n${svgContent}\n</svg>`;
         }
 
-        // Function to generate the dynamic question and solution
+        // Generate the dynamic question and solution
         function generateQuestion() {
-            // Retrieve parameters
             const a = parseInt(document.getElementById('param-a').value) || 3;
             const d = parseInt(document.getElementById('param-d').value) || 2;
             const k = parseInt(document.getElementById('param-k').value) || 6888;
 
-            // Generate SVG Graphic (with a safety limit to prevent browser freezing on huge numbers)
+            // Generate SVG Graphic
             let svgHTML = '';
             if (a + 2 * d <= 400) {
                 svgHTML = generateSVG(a, d);
@@ -241,60 +339,84 @@
                 <p>The 1st pattern consists of \\( ${a} \\) dots. For any positive integer \\( n \\), the \\( (n + 1) \\)-th pattern is formed by adding \\( ${d} \\) dots to the \\( n \\)-th pattern. Find the least value of \\( m \\) such that the total number of dots in the first \\( m \\) patterns exceeds \\( ${k} \\).</p>
             `;
 
-            // Math computations for the solution
+            // Math computations
             const coeffA = d;
             const coeffB = 2 * a - d;
             const coeffC = -2 * k;
-
-            // Quadratic formula: m = (-B + sqrt(B^2 - 4AC)) / 2A
             const discriminant = (coeffB * coeffB) - (4 * coeffA * coeffC);
             const root = (-coeffB + Math.sqrt(discriminant)) / (2 * coeffA);
-            
-            // Since we need it to EXCEED K, we take the floor of the root and add 1.
             const m_ans = Math.floor(root) + 1;
 
-            // Generate Solution Text
+            // Generate Step-by-Step Solution Text
             let solutionText = `
-                <p class="mb-2">Let \\( T(n) \\) be the number of dots in the \\( n \\)-th pattern.</p>
-                <p class="mb-2">This forms an arithmetic sequence with first term \\( a = ${a} \\) and common difference \\( d = ${d} \\).</p>
-                <p class="mb-2">The sum of the first \\( m \\) patterns is \\( S(m) \\):</p>
-                <div class="overflow-x-auto">
-                    \\[ S(m) = \\frac{m}{2} [2(${a}) + (m-1)(${d})] \\]
-                    \\[ S(m) = \\frac{m}{2} [${2*a} + ${d}m - ${d}] \\]
-                    \\[ S(m) = \\frac{m}{2} [${d}m + ${coeffB}] \\]
+                <div class="step">
+                    <span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 1: Identify the Sequence</span>
+                    <p>Let \\( T(n) \\) be the number of dots in the \\( n \\)-th pattern.</p>
+                    <p>This forms an arithmetic sequence with first term \\( a = ${a} \\) and common difference \\( d = ${d} \\).</p>
                 </div>
-                <p class="mb-2 mt-2">We require \\( S(m) > ${k} \\):</p>
-                <div class="overflow-x-auto">
-                    \\[ \\frac{m}{2} [${d}m + ${coeffB}] > ${k} \\]
-                    \\[ ${d}m^2 + ${coeffB}m > ${2*k} \\]
-                    \\[ ${d}m^2 + ${coeffB}m - ${2*k} > 0 \\]
+                
+                <div class="step">
+                    <span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 2: Sum Formula</span>
+                    <p>The sum of the first \\( m \\) patterns is \\( S(m) \\):</p>
+                    <div class="overflow-x-auto my-2">
+                        \\[ S(m) = \\frac{m}{2} [2(${a}) + (m-1)(${d})] \\]
+                        \\[ S(m) = \\frac{m}{2} [${2*a} + ${d}m - ${d}] \\]
+                        \\[ S(m) = \\frac{m}{2} [${d}m + ${coeffB}] \\]
+                    </div>
                 </div>
-                <p class="mb-2 mt-2">To find the critical value, we solve the quadratic equation \\( ${d}m^2 + ${coeffB}m - ${2*k} = 0 \\) using the quadratic formula:</p>
-                <div class="overflow-x-auto">
-                    \\[ m = \\frac{-(${coeffB}) \\pm \\sqrt{(${coeffB})^2 - 4(${coeffA})(-${2*k})}}{2(${coeffA})} \\]
-                    \\[ m = \\frac{${-coeffB} \\pm \\sqrt{${coeffB*coeffB} + ${-4*coeffA*coeffC}}}{${2*coeffA}} \\]
-                    \\[ m = \\frac{${-coeffB} \\pm \\sqrt{${discriminant}}}{${2*coeffA}} \\]
+
+                <div class="step">
+                    <span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 3: Set up Inequality</span>
+                    <p>We require the sum to exceed \\( ${k} \\), so \\( S(m) > ${k} \\):</p>
+                    <div class="overflow-x-auto my-2">
+                        \\[ \\frac{m}{2} [${d}m + ${coeffB}] > ${k} \\]
+                        \\[ ${d}m^2 + ${coeffB}m > ${2*k} \\]
+                        \\[ ${d}m^2 + ${coeffB}m - ${2*k} > 0 \\]
+                    </div>
                 </div>
-                <p class="mb-2 mt-2">Taking the positive root, we get \\( m \\approx ${root.toFixed(4)} \\).</p>
-                <p class="mb-2">Since \\( m \\) must be an integer and the sum must strictly exceed \\( ${k} \\), we take the next integer greater than the root.</p>
-                <p class="font-bold text-gray-900 mt-4">Therefore, the least value of \\( m \\) is ${m_ans}.</p>
+
+                <div class="step">
+                    <span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 4: Solve Quadratic Inequality</span>
+                    <p>To find the critical value, we solve the quadratic equation \\( ${d}m^2 + ${coeffB}m - ${2*k} = 0 \\) using the quadratic formula:</p>
+                    <div class="overflow-x-auto my-2">
+                        \\[ m = \\frac{-(${coeffB}) \\pm \\sqrt{(${coeffB})^2 - 4(${coeffA})(-${2*k})}}{2(${coeffA})} \\]
+                        \\[ m = \\frac{${-coeffB} \\pm \\sqrt{${coeffB*coeffB} + ${-4*coeffA*coeffC}}}{${2*coeffA}} \\]
+                        \\[ m = \\frac{${-coeffB} \\pm \\sqrt{${discriminant}}}{${2*coeffA}} \\]
+                    </div>
+                    <p>Taking the positive root, we get \\( m \\approx ${root.toFixed(4)} \\).</p>
+                </div>
+
+                <div class="step">
+                    <span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2 uppercase tracking-wide">Step 5: Final Answer</span>
+                    <p>Since \\( m \\) must be an integer and the sum must strictly exceed \\( ${k} \\), we take the next integer greater than the root.</p>
+                    <p class="font-bold text-gray-900 text-lg mt-2">Therefore, the least value of \\( m \\) is ${m_ans}.</p>
+                </div>
             `;
 
-            // Clean up math strings (e.g. fixing "+ -x" to "- x")
             solutionText = cleanMathString(solutionText);
 
             // Inject into DOM
             document.getElementById('dynamic-question').innerHTML = questionText;
             document.getElementById('dynamic-solution').innerHTML = solutionText;
             
+            // Reset the "Next" button visibility
+            const controls = document.getElementById('dynamic-controls');
+            const nextBtn = controls.querySelector('.next-btn');
+            if (nextBtn) nextBtn.style.display = 'flex';
+
             // Show the output area
             document.getElementById('dynamic-output').classList.remove('hidden');
 
             // Tell MathJax to process the newly injected LaTeX
             if (window.MathJax) {
-                MathJax.typesetPromise([document.getElementById('dynamic-output')]).catch(function (err) {
+                MathJax.typesetPromise([document.getElementById('dynamic-output')]).then(() => {
+                    // Auto-show the first step after MathJax is done rendering
+                    showNextStep('dynamic-solution');
+                }).catch(function (err) {
                     console.error('MathJax error: ', err.message);
                 });
+            } else {
+                showNextStep('dynamic-solution');
             }
         }
     </script>
