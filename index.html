@@ -31,7 +31,7 @@
             opacity: 0;
         }
         .solution-content.show {
-            max-height: 1000px;
+            max-height: 1500px;
             opacity: 1;
         }
     </style>
@@ -117,7 +117,7 @@
         <!-- Step 2: Dynamic Question Generator -->
         <section class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
             <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Step 2: Generate Similar Questions</h2>
-            <p class="text-gray-600 mb-6">Adjust the parameters below to generate a new variation of the question and its corresponding step-by-step solution.</p>
+            <p class="text-gray-600 mb-6">Adjust the parameters below to generate a new variation of the question. The visual dot pattern and the step-by-step solution will be dynamically created.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
@@ -170,6 +170,52 @@
             return str.replace(/\+\s*-/g, '- ');
         }
 
+        // Function to dynamically generate the SVG for the dots
+        function generateSVG(a, d) {
+            // Determine a nice grid width based on the maximum dots in the 3rd pattern
+            const maxDots = a + 2 * d;
+            const cols = Math.max(3, Math.ceil(Math.sqrt(maxDots)));
+            
+            const dx = 18; // Horizontal spacing
+            const dy = 18; // Vertical spacing
+            let offsetX = 10;
+            let svgContent = '';
+            let maxHeight = 0;
+
+            for (let i = 0; i < 3; i++) {
+                const N = a + i * d;
+                let patternWidth = (Math.min(N, cols) - 1) * dx;
+                let patternHeight = Math.floor((N - 1) / cols) * dy;
+                
+                // Keep track of the tallest pattern to set the SVG viewBox properly
+                maxHeight = Math.max(maxHeight, 20 + patternHeight + 40);
+
+                // Draw the dots for Pattern i
+                for (let j = 0; j < N; j++) {
+                    const cx = offsetX + (j % cols) * dx;
+                    const cy = 20 + Math.floor(j / cols) * dy;
+                    svgContent += `<circle cx="${cx}" cy="${cy}" r="4" fill="#374151"/>\n`;
+                }
+
+                const arrowStartX = offsetX + patternWidth + 20;
+                const arrowEndX = arrowStartX + 30;
+                const arrowY = 20 + patternHeight / 2;
+
+                if (i < 2) {
+                    // Draw arrow to the next pattern
+                    svgContent += `<path d="M ${arrowStartX} ${arrowY} L ${arrowEndX} ${arrowY} M ${arrowEndX - 10} ${arrowY - 10} L ${arrowEndX} ${arrowY} L ${arrowEndX - 10} ${arrowY + 10}" stroke="#374151" stroke-width="2" fill="none"/>\n`;
+                    offsetX = arrowEndX + 20;
+                } else {
+                    // Draw ellipsis after the 3rd pattern
+                    svgContent += `<text x="${arrowStartX}" y="${arrowY + 8}" font-size="24" font-weight="bold" fill="#374151">...</text>\n`;
+                    offsetX = arrowStartX + 50; // Final total width
+                }
+            }
+
+            const viewBox = `0 0 ${offsetX} ${maxHeight}`;
+            return `<svg width="${offsetX}" height="${maxHeight}" viewBox="${viewBox}" class="max-w-full mx-auto">\n${svgContent}\n</svg>`;
+        }
+
         // Function to generate the dynamic question and solution
         function generateQuestion() {
             // Retrieve parameters
@@ -177,14 +223,25 @@
             const d = parseInt(document.getElementById('param-d').value) || 2;
             const k = parseInt(document.getElementById('param-k').value) || 6888;
 
+            // Generate SVG Graphic (with a safety limit to prevent browser freezing on huge numbers)
+            let svgHTML = '';
+            if (a + 2 * d <= 400) {
+                svgHTML = generateSVG(a, d);
+            } else {
+                svgHTML = `<div class="text-center text-gray-500 italic my-4 border border-dashed border-gray-300 p-4 rounded bg-gray-100">
+                    Visual representation omitted (too many dots to render efficiently).
+                </div>`;
+            }
+
             // Generate Question Text
-            const questionText = `The 1st pattern consists of \\( ${a} \\) dots. For any positive integer \\( n \\), the \\( (n + 1) \\)-th pattern is formed by adding \\( ${d} \\) dots to the \\( n \\)-th pattern. Find the least value of \\( m \\) such that the total number of dots in the first \\( m \\) patterns exceeds \\( ${k} \\).`;
+            const questionText = `
+                <div class="flex justify-center my-6 overflow-x-auto">
+                    ${svgHTML}
+                </div>
+                <p>The 1st pattern consists of \\( ${a} \\) dots. For any positive integer \\( n \\), the \\( (n + 1) \\)-th pattern is formed by adding \\( ${d} \\) dots to the \\( n \\)-th pattern. Find the least value of \\( m \\) such that the total number of dots in the first \\( m \\) patterns exceeds \\( ${k} \\).</p>
+            `;
 
             // Math computations for the solution
-            // S(m) = (m/2) * [2a + (m-1)d] > K
-            // m * [2a - d + dm] > 2K
-            // d*m^2 + (2a - d)*m - 2K > 0
-            
             const coeffA = d;
             const coeffB = 2 * a - d;
             const coeffC = -2 * k;
